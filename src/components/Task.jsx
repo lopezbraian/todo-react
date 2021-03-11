@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useThemeContext } from "../ThemeContext";
+import { useTasksContext } from "../TaskContext";
+
 import { Status } from "./Status";
+
 const TaskContainer = styled.div`
   border-bottom: 0.5px solid #cccbcb;
   position: relative;
@@ -12,10 +15,10 @@ const TaskContainer = styled.div`
 const ContainerText = styled.div`
   width: 70%;
   p {
-    text-decoration: ${(props) => (props.state ? "line-through" : "none")} ;
-    color : ${(props) => props.modeDark ? "white" : "black"};
-    color : ${(props) => props.state && "var(--ice-blue)"};
-  }    
+    text-decoration: ${(props) => (props.state ? "line-through" : "none")};
+    color: ${(props) => (props.modeDark ? "white" : "black")};
+    color: ${(props) => props.state && "var(--ice-blue)"};
+  }
 `;
 
 const ContainerButtonClose = styled.div`
@@ -27,18 +30,29 @@ const ContainerStatus = styled.div`
   padding-left: 15px;
 `;
 export const Task = ({ data }) => {
+  const { indexArray, state, content } = data;
   const modeDark = useThemeContext();
+
+  const tasksContext = useTasksContext();
+
+  const handleDelete = (indexArray) => {
+    tasksContext.deleteTasks(indexArray);
+  };
+
+  const handleStateTask = (indexArray) => {
+    tasksContext.changeStateTask(indexArray);
+  };
   return (
     <TaskContainer>
-      <ContainerStatus>
-        <Status state={data.state}></Status>
+      <ContainerStatus onClick={() => handleStateTask(indexArray)}>
+        <Status state={state}></Status>
       </ContainerStatus>
 
-      <ContainerText state={data.state} modeDark={modeDark.mode()}>
-        <p>{data.content}</p>
+      <ContainerText state={state} modeDark={modeDark.mode()}>
+        <p>{content}</p>
       </ContainerText>
 
-      <ContainerButtonClose>
+      <ContainerButtonClose onClick={() => handleDelete(indexArray)}>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18">
           <path
             fill="#494C6B"

@@ -1,55 +1,46 @@
 import React from "react";
 import styled from "styled-components";
+import { useTasksContext } from "../TaskContext";
 import { useThemeContext } from "../ThemeContext";
 import { InfoTasks } from "./InfoTasks";
 import { Task } from "./Task";
 
-const tasksData = [
-  {
-    content: "contenido uno ",
-    state: false,
-  },
-  {
-    content: "contenido dos ",
-    state: false,
-  },
-  {
-    content: "contenido tres ",
-    state: false,
-  },
-  {
-    content: "contenido cuatro ",
-    state: true,
-  },
-  {
-    content: "contenido cinco ",
-    state: false,
-  },
-  {
-    content: "contenido seis ",
-    state: false,
-  },
-  {
-    content: "contenido siete ",
-    state: true,
-  },
-];
-
 const TasksContainer = styled.div`
-  margin: 0 30px;
-  margin-top: -25px;
+  
   border-radius: 5px;
   background: ${(props) =>
     props.modeDark ? "var(--indigo-ligth)" : "#ffffff"};
+  margin: -25px 30px;
+  max-width: 550px;
+  @media screen and (min-width:600px) { 
+    margin: -25px auto;
+  }
 `;
-export const Tasks = () => {
+export const Tasks = ({ filter }) => {
   const modeDark = useThemeContext();
+  const tasksContext = useTasksContext();
+
+  let tasks = tasksContext.tasks;
+
+  switch (filter) {
+    case "nocomplete":
+      tasks = tasks.filter((t) => !t.state);
+      break;
+
+    case "complete":
+      tasks = tasks.filter((t) => t.state);
+      break;
+
+    default:
+      break;
+  }
+
   return (
-    <TasksContainer modeDark = {modeDark.mode()}>
-      {tasksData.map((d, index) => (
-        <Task key={index} data={d}></Task>
+    <TasksContainer modeDark={modeDark.mode()}>
+      {tasks.map((d, index) => (
+        <Task key={index} data={{ ...d, indexArray: index }}></Task>
       ))}
-      <InfoTasks total = {tasksData.filter((t) => !t.state).length}/>
+      <InfoTasks total={tasks.filter((t) => !t.state).length} />
     </TasksContainer>
   );
 };

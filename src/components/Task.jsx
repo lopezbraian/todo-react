@@ -24,6 +24,7 @@ const ContainerText = styled.div`
 const ContainerButtonClose = styled.div`
   width: 25%;
   text-align: center;
+  cursor:pointer;
 `;
 const ContainerStatus = styled.div`
   width: 25%;
